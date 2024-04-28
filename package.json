@@ -44,7 +44,8 @@
           "SwitchCase": 1
         }
       ],
-      "eol-last": "error"
+      "eol-last": "error",
+      "require-yield": "off"
     }
   },
   "browserslist": {

@@ -19,8 +19,7 @@
 // reportWebVitals();
 import App from './App';
 import { bootstrap } from 'core-fe';
-import './modules';
-import './mock';
+import './modules/global';
 
 bootstrap({
   rootContainer: document.getElementById('root') as HTMLElement,

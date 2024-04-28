@@ -8,7 +8,6 @@ type Props = {};
 export default function Header({}: Props) {
   const { username } = useSelector((state: State) => state.app.user.userInfo as IUser);
 
-  console.log(1111, useLocation());
   return (
     <div>
       <Breadcrumb>

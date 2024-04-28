@@ -2,14 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch, useLocation, push } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, DatePicker, Input, Select, Space, message } from 'antd';
-import {
-  getScheduleDetails,
-  createSchedule,
-  editSchedule,
-  reservedSchedule
-} from '../../modules/schedule';
-import { getUserList } from '../../modules/user';
-import { getRoomDetails } from '../../modules/room';
+import scheduleModuleProxy from '../../modules/schedule';
+import { userModuleProxy } from '../../modules/global';
+import roomModuleProxy from '../../modules/room';
 import {
   USAGE_CODES,
   USAGE_CODE_ENUM,
@@ -25,7 +20,7 @@ import qs from 'qs';
 const { TextArea } = Input;
 type Props = {};
 
-export default function ScheduleEdit({}: Props) {
+function ScheduleEdit({}: Props) {
   const {
     user: {
       userInfo: { userid: myUserid, username: myUsername },
@@ -39,6 +34,9 @@ export default function ScheduleEdit({}: Props) {
     roomDetails: (state.app.room.data || {}) as IRoom
   }));
   const dispatch = useDispatch();
+  const { getRoomDetails } = roomModuleProxy.getActions();
+  const { createSchedule, editSchedule, reservedSchedule } = scheduleModuleProxy.getActions();
+  const { getUserList } = userModuleProxy.getActions();
 
   const { roomId, id } = qs.parse(useLocation().search.slice(1)) as { roomId: string; id: string };
 
@@ -56,28 +54,26 @@ export default function ScheduleEdit({}: Props) {
   }, [roomDetails]);
 
   useEffect(() => {
-    getRoomDetails(roomId);
-    getUserList();
+    dispatch(getRoomDetails(roomId));
+    dispatch(getUserList());
   }, []);
 
   useEffect(() => {
-    if (id) {
-      getScheduleDetails(id).then((res?: ISchedule) => {
-        const initialValues: ISchedule & { timeSlotsArr?: string[]; dateDayjs?: Dayjs } = {
-          ...(res as ISchedule)
-        };
-        initialValues.timeSlotsArr = getTimeSlotsArr(initialValues.timeSlots);
-        initialValues.dateDayjs = dayjs(initialValues.date);
+    if (scheduleDetails) {
+      const initialValues: ISchedule & { timeSlotsArr?: string[]; dateDayjs?: Dayjs } = {
+        ...scheduleDetails
+      };
+      initialValues.timeSlotsArr = getTimeSlotsArr(initialValues.timeSlots);
+      initialValues.dateDayjs = dayjs(initialValues.date);
 
-        form.setFieldsValue(initialValues);
-      });
+      form.setFieldsValue(initialValues);
     } else {
       form.setFieldsValue({
         dateDayjs: dayjs(),
         attendees: [myUserid]
       });
     }
-  }, [id]);
+  }, [scheduleDetails]);
 
   const goScheduleDetails = () => {
     dispatch(push(`/scheduleDetails/${id}`));
@@ -109,46 +105,64 @@ export default function ScheduleEdit({}: Props) {
     });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async () => {
     if (!roomId) {
       message.error('缺少会议室id');
       return;
     }
     return form
       .validateFields()
-      .then(async (values: ISchedule & { timeSlotsArr?: string[]; dateDayjs?: Dayjs }) => {
-        const submitData = { ...values, roomId, id };
-        submitData.timeSlots = getTimeSlots(submitData.timeSlotsArr);
-        submitData.timeSlotsArr = undefined;
-        submitData.date = dayjs(submitData.dateDayjs).format(DATE_FORMAT);
-        submitData.dateDayjs = undefined;
-        console.log(submitData);
-
-        //同一个使用者在同一时间不能同时预订 2 个会议室
-        const existSchedule = await reservedSchedule(
-          submitData.date,
-          submitData.timeSlots,
-          submitData.id
-        );
-        if (existSchedule) {
-          message.error(
-            `您已预约会议室id ${existSchedule.roomId} ${existSchedule.timeSlots} 的${USAGE_CODE_ENUM[existSchedule.usageCode]}`
+      .then(
+        (
+          values: ISchedule & {
+            timeSlotsArr?: string[];
+            dateDayjs?: Dayjs;
+          }
+        ) => {
+          const submitData = { ...values, roomId, id };
+          submitData.timeSlots = getTimeSlots(submitData.timeSlotsArr);
+          submitData.timeSlotsArr = undefined;
+          submitData.date = dayjs(submitData.dateDayjs).format(DATE_FORMAT);
+          submitData.dateDayjs = undefined;
+          console.log(submitData);
+          //同一个使用者在同一时间不能同时预订 2 个会议室
+          dispatch(
+            reservedSchedule(
+              submitData.date,
+              submitData.timeSlots,
+              submitData.id,
+              (existSchedule) => {
+                if (existSchedule) {
+                  message.error(
+                    `您已预约会议室id ${existSchedule.roomId} ${existSchedule.timeSlots} 的${USAGE_CODE_ENUM[existSchedule.usageCode]}`
+                  );
+                  throw `时段不可预约`;
+                }
+                if (!id) {
+                  dispatch(
+                    createSchedule(submitData, () => {
+                      form.resetFields();
+                      goRoomDetails();
+                    })
+                  );
+                } else {
+                  dispatch(
+                    editSchedule(submitData, () => {
+                      form.resetFields();
+                      goRoomDetails();
+                    })
+                  );
+                }
+              }
+            )
           );
-          throw `时段不可预约`;
         }
-
-        if (!id) {
-          return createSchedule(submitData);
-        } else {
-          return editSchedule(submitData);
-        }
-      })
-      .then(() => {
-        goRoomDetails();
-      })
-      .catch((err: Error) => {
-        console.error(err);
+      )
+      .catch((err) => {
+        console.log(err);
       });
+
+    //
   };
 
   return id && scheduleDetails?.userid !== myUserid ? (
@@ -225,3 +239,5 @@ export default function ScheduleEdit({}: Props) {
     </div>
   );
 }
+
+export default scheduleModuleProxy.attachLifecycle(ScheduleEdit);

@@ -1,5 +1,6 @@
 import { Module, register } from 'core-fe';
-// import ScheduleDetails from '../pages/ScheduleDetails';
+import { call } from 'redux-saga/effects';
+import type { ModuleLocation, SagaGenerator } from 'core-fe';
 import {
   getScheduleList as _getScheduleList,
   getScheduleDetails as _getScheduleDetails,
@@ -8,6 +9,7 @@ import {
   delSchedule as _delSchedule,
   reservedSchedule as _reservedSchedule
 } from '../mock';
+import qs from 'qs';
 
 declare global {
   interface ISchedule {
@@ -24,65 +26,90 @@ declare global {
   }
 }
 
-const scheduleModule = new Module('schedule', { list: [], data: {} });
+class ScheduleModule extends Module<RootState, 'schedule'> {
+  constructor() {
+    super('schedule', { list: [], data: {} });
+  }
 
-/**
- * 获取会议室下的日程列表
- * @param roomId 会议室id
- */
-export const getScheduleList = async (roomId: string) => {
-  const data = await _getScheduleList(roomId);
-  scheduleModule.setState({
-    list: data
-  });
-};
+  *onEnter(entryComponentProps: any): SagaGenerator {
+    const {
+      match: { path, params }
+    } = entryComponentProps;
+    if (path.includes('/scheduleDetails')) {
+      const { id } = params;
+      if (!id) return;
+      yield call(this.getScheduleDetails.bind(this), id);
+    }
+  }
+  *onLocationMatched(routeParam: object, location: ModuleLocation<object>): SagaGenerator {
+    const { pathname, search } = location;
+    const { id } = qs.parse(search.slice(1));
+    if (pathname === '/scheduleEdit' && id) {
+      //@ts-ignore
+      yield call(this.getScheduleDetails.bind(this), id);
+    }
+  }
+  /**
+   * 获取会议室下的日程列表
+   * @param roomId 会议室id
+   */
+  *getScheduleList(roomId: string) {
+    const data = (yield call(_getScheduleList, roomId)) as ISchedule[];
+    this.setState({
+      list: data
+    });
+  }
 
-/**
- * 获取日程详情
- * @param id 日程id
- */
-export const getScheduleDetails = async (id: string) => {
-  const data = await _getScheduleDetails(id);
-  scheduleModule.setState({
-    data
-  });
-  return data;
-};
+  /**
+   * 获取日程详情
+   * @param id 日程id
+   */
+  *getScheduleDetails(id: string) {
+    const data = (yield call(_getScheduleDetails, id)) as ISchedule;
+    this.setState({
+      data
+    });
+    return data;
+  }
 
-/**
- * 创建日程
- * @param values ISchedule数据，除了id没有
- */
-export const createSchedule = async (values: Pick<ISchedule, 'id'>) => {
-  await _createSchedule(values as ISchedule);
-};
+  /**
+   * 创建日程
+   * @param values ISchedule数据，除了id没有
+   */
+  *createSchedule(values: Pick<ISchedule, 'id'>, cb?: () => void) {
+    yield call(_createSchedule, values as ISchedule);
+    cb?.();
+  }
 
-/**
- * 编辑日程
- * @param values ISchedule数据
- */
-export const editSchedule = async (values: ISchedule) => {
-  await _editSchedule(values);
-};
+  /**
+   * 编辑日程
+   * @param values ISchedule数据
+   */
+  *editSchedule(values: ISchedule, cb?: () => void) {
+    yield call(_editSchedule, values);
+    cb?.();
+  }
 
-/**
- * 删除日程
- * @param id 日程id
- */
-export const delSchedule = async (id: string) => {
-  await _delSchedule(id);
-};
+  /**
+   * 删除日程
+   * @param id 日程id
+   */
+  *delSchedule(id: string, cb?: () => void) {
+    yield call(_delSchedule, id);
+    cb?.();
+  }
 
-/**
- * 获取某个日期 时间段已预定的日程
- * @param date 当前日期
- * @param timeSlots 时间段
- * @param id 日程id, 修改则不判断原日程时间段
- * @returns boolean
- */
-export const reservedSchedule = async (date: string, timeSlots: string, id?: string) => {
-  const data = await _reservedSchedule(date, timeSlots, id);
-  return data;
-};
-register(scheduleModule);
-// export default register(scheduleModule).attachLifecycle(ScheduleDetails);
+  /**
+   * 获取某个日期 时间段已预定的日程
+   * @param date 当前日期
+   * @param timeSlots 时间段
+   * @param id 日程id, 修改则不判断原日程时间段
+   * @returns ISchedule
+   */
+  *reservedSchedule(date: string, timeSlots: string, id?: string, cb?: (data: ISchedule) => void) {
+    const data = (yield call(_reservedSchedule, date, timeSlots, id)) as ISchedule;
+    cb?.(data);
+  }
+}
+
+export default register(new ScheduleModule());

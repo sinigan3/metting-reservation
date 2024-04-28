@@ -3,14 +3,14 @@ import type { MouseEventHandler } from 'react';
 import { push, useSelector, useDispatch, useParams, useLocation } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Space } from 'antd';
-import { getRoomDetails } from '../../modules/room';
-import { delSchedule } from '../../modules/schedule';
+import roomModuleProxy from '../../modules/room';
+import scheduleModuleProxy from '../../modules/schedule';
 import { USAGE_CODE_ENUM, TODAY_DATE, ALL_TIME_SLOTS, getTimeSlotsArr } from '../../utils';
 import qs from 'qs';
 
 type Props = {};
 
-export default function RoomDetails({}: Props) {
+function RoomDetails({}: Props) {
   const {
     roomDetails: { name, schedules },
     userInfo: { userid: myUserid }
@@ -21,13 +21,15 @@ export default function RoomDetails({}: Props) {
   const dispatch = useDispatch();
   const id = (useParams() as { id: string }).id;
   const { date } = qs.parse(useLocation().search.slice(1)) as { date: string };
+  const { getRoomDetails } = roomModuleProxy.getActions();
+  const { delSchedule } = scheduleModuleProxy.getActions();
 
-  useEffect(() => {
-    if (!id) {
-      return;
-    }
-    getRoomDetails(id);
-  }, [id]);
+  // useEffect(() => {
+  //   if (!id) {
+  //     return;
+  //   }
+  //   dispatch(getRoomDetails(id));
+  // }, [id]);
 
   const goScheduleDetails: MouseEventHandler = (e) => {
     const scheduleId = (e.target as HTMLElement).dataset.id;
@@ -40,10 +42,12 @@ export default function RoomDetails({}: Props) {
     dispatch(push(`/scheduleEdit?roomId=${id}${scheduleId ? `&id=${scheduleId}` : ''}`));
   };
 
-  const handleDelSchedule = (scheduleId: string) => {
-    delSchedule(scheduleId).then(() => {
-      getRoomDetails(id);
-    });
+  const handleDelSchedule = function (scheduleId: string) {
+    dispatch(
+      delSchedule(scheduleId, () => {
+        dispatch(getRoomDetails(id));
+      })
+    );
   };
 
   const showTimeSlotsList = useMemo(() => {
@@ -120,3 +124,5 @@ export default function RoomDetails({}: Props) {
     </div>
   );
 }
+
+export default roomModuleProxy.attachLifecycle(RoomDetails);

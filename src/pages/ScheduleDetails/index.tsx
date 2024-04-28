@@ -2,48 +2,65 @@ import React, { useEffect, useState } from 'react';
 import { push, useSelector, useDispatch, useParams } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, Space } from 'antd';
-import { getScheduleDetails, delSchedule } from '../../modules/schedule';
-import { getUserNames } from '../../modules/user';
+import scheduleModuleProxy from '../../modules/schedule';
+import { userModuleProxy } from '../../modules/global';
 import { USAGE_CODE_ENUM } from '../../utils';
 
 type Props = {};
 
-export default function ScheduleDetails({}: Props) {
+function ScheduleDetails({}: Props) {
   const {
-    scheduleDetails: { date, timeSlots, idle, roomId, userid, username, usageCode, usageDesc },
+    scheduleDetails: {
+      date,
+      timeSlots,
+      idle,
+      roomId,
+      userid,
+      username,
+      usageCode,
+      usageDesc,
+      attendees
+    },
     userInfo: { userid: myUserid }
   } = useSelector((state: State) => ({
     scheduleDetails: (state.app.schedule.data || {}) as ISchedule,
     userInfo: state.app.user.userInfo as IUser
   }));
   const dispatch = useDispatch();
-
+  const { delSchedule } = scheduleModuleProxy.getActions();
+  // @ts-ignore
+  const { getUserNames } = userModuleProxy.getActions();
   const id = (useParams() as { id: string }).id;
 
   const [attendeesNames, setAttendeesNames] = useState<string[]>([]);
 
+  // useEffect(() => {
+  //   if (!id) {
+  //     return;
+  //   }
+  //   // @ts-ignore
+  //   dispatch(getScheduleDetails(id)).then(({ attendees }: ISchedule = {}) => {
+  //     if (attendees?.length) {
+  //       getUserNames(attendees).then((names) => {
+  //         setAttendeesNames(names as string[]);
+  //       });
+  //     }
+  //   });
+  // }, [id]);
   useEffect(() => {
-    if (!id) {
-      return;
-    }
-    // @ts-ignore
-    getScheduleDetails(id).then(({ attendees }: ISchedule = {}) => {
-      if (attendees?.length) {
-        getUserNames(attendees).then((names) => {
-          setAttendeesNames(names as string[]);
-        });
-      }
-    });
-  }, [id]);
+    dispatch(getUserNames(attendees, setAttendeesNames));
+  }, [attendees]);
 
   const goEdit = () => {
     dispatch(push(`/scheduleEdit?roomId=${roomId}&id=${id}`));
   };
 
-  const handleDelSchedule = () => {
-    delSchedule(id).then(() => {
-      dispatch(push(`/roomDetails/${roomId}`));
-    });
+  const handleDelSchedule = function () {
+    dispatch(
+      delSchedule(id, () => {
+        dispatch(push(`/roomDetails/${roomId}`));
+      })
+    );
   };
 
   return (
@@ -69,7 +86,7 @@ export default function ScheduleDetails({}: Props) {
           <span className="ant-form-text">{usageDesc}</span>
         </Form.Item>
         <Form.Item label="参会人">
-          <span className="ant-form-text">{attendeesNames?.join('， ')}</span>
+          <span className="ant-form-text">{(attendeesNames || attendees)?.join('， ')}</span>
         </Form.Item>
       </Form>
       {myUserid === userid && (
@@ -81,3 +98,5 @@ export default function ScheduleDetails({}: Props) {
     </div>
   );
 }
+
+export default scheduleModuleProxy.attachLifecycle(ScheduleDetails);

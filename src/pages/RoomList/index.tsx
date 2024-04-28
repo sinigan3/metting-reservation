@@ -1,30 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import type { MouseEventHandler } from 'react';
-import { push, useSelector, useDispatch } from 'core-fe';
+import { push, useSelector, useDispatch, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';
 import { Input, DatePicker, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { getRoomList } from '../../modules/room';
+import roomModuleProxy from '../../modules/room';
 import { TODAY_DATE } from '../../utils';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
 type Props = {};
 
-export default function RoomList({}: Props) {
-  const roomList: IRoom[] = useSelector((state: State) => {
-    console.log(state);
-    return state.app.room.list || [];
-  });
+function RoomList({}: Props) {
+  const roomList: IRoom[] = useSelector((state: State) => state.app.room.list || []);
   const dispatch = useDispatch();
+  const { getRoomList } = roomModuleProxy.getActions();
+  console.log(9999, useLoadingStatus());
 
   const [localRoomList, setLocalRoomList] = useState<IRoom[]>(roomList);
   const [date, setDate] = useState(TODAY_DATE);
   const [searchText, setSearchText] = useState('');
 
-  useEffect(() => {
-    getRoomList();
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getRoomList());
+  // }, []);
 
   useEffect(() => {
     const searchTextTrim = searchText.trim();
@@ -44,7 +43,7 @@ export default function RoomList({}: Props) {
   const handleChangeDate = (_: Dayjs, dateStr: string | string[]) => {
     dateStr = dateStr as string;
     setDate(dateStr);
-    getRoomList(dateStr);
+    dispatch(getRoomList(dateStr));
   };
 
   return (
@@ -69,3 +68,5 @@ export default function RoomList({}: Props) {
     </div>
   );
 }
+
+export default roomModuleProxy.attachLifecycle(RoomList);
