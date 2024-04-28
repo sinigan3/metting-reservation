@@ -15,7 +15,7 @@ function RoomList({}: Props) {
   const roomList: IRoom[] = useSelector((state: State) => state.app.room.list || []);
   const dispatch = useDispatch();
   const { getRoomList } = roomModuleProxy.getActions();
-  console.log(9999, useLoadingStatus());
+  const loadingStatus = useLoadingStatus('roomList');
 
   const [localRoomList, setLocalRoomList] = useState<IRoom[]>(roomList);
   const [date, setDate] = useState(TODAY_DATE);
@@ -46,7 +46,9 @@ function RoomList({}: Props) {
     dispatch(getRoomList(dateStr));
   };
 
-  return (
+  return loadingStatus ? (
+    <div>加载中，请稍后。。。</div>
+  ) : (
     <div>
       <h1>会议列表页</h1>
       <Space>

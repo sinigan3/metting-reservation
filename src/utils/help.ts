@@ -1,3 +1,6 @@
+// import type { State, Module, SagaGenerator } from 'core-fe';
+// import type { ActionHandler } from 'core-fe/src/module';
+
 /**
  * 获取时间段数组显示文本
  * @param timeSlots 时间段数组，如[9:00-10:00, 10:00-11:00]
@@ -40,3 +43,16 @@ export function isConfictiTimeSlots(timeSlot1: string, timeSlot2: string) {
   const e2 = +timeSlot2Arr[1].split(':')[0];
   return !((s2 < s1 && e2 <= s1) || (s2 > s1 && s2 >= e1));
 }
+
+// export function decorator<
+//   RootState extends State = State,
+//   This extends Module<RootState, string> = Module<RootState, string>,
+//   Fn extends (this: This, ...args: any[]) => SagaGenerator = ActionHandler
+// >(
+//   context: ClassMethodDecoratorContext<This, Fn>,
+//   wrappedFunc: (fn: Fn, context: ClassMethodDecoratorContext<This, Fn>) => SagaGenerator
+// ) {
+//   return function (target: any, propertyKey: string) {
+//     return wrappedFunc(target[propertyKey] as Fn, context);
+//   };
+// }

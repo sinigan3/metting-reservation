@@ -1,8 +1,8 @@
 import { Module, register, Loading } from 'core-fe';
-import type { ModuleLocation, SagaGenerator } from 'core-fe';
+import type { SagaGenerator } from 'core-fe';
 import { call, delay } from 'redux-saga/effects';
-
 import { getRoomList as _getRoomList, getRoomDetails as _getRoomDetails } from '../mock';
+// import { decorator } from '../utils';
 
 declare global {
   interface IRoom {
@@ -53,5 +53,24 @@ class RoomModulle extends Module<RootState, 'room'> {
 }
 
 const roomModule = new RoomModulle();
+
+roomModule.getRoomList = Loading('roomList')(roomModule.getRoomList, {
+  kind: 'method',
+  name: 'getRoomList',
+  static: false,
+  private: false,
+  access: {
+    has() {
+      return false;
+    },
+    get(object: RoomModulle) {
+      return object.getRoomList;
+    }
+  },
+  addInitializer() {},
+  metadata: {
+    Symbol: Symbol()
+  }
+});
 
 export default register(roomModule);
