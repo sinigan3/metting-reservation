@@ -32,11 +32,13 @@ class RoomModulle extends Module<RootState, 'room'> {
   }
   // *onLocationMatched(routeParam: object, location: ModuleLocation<object>): SagaGenerator {
   // }
+  *onDestroy(): SagaGenerator {
+    this.setState({ data: {} });
+  }
   /**
    * 获取某个日期会议室列表
    * @param date 如2024.4.25
    */
-
   *getRoomList(date?: string): SagaGenerator {
     yield delay(2000);
     const data = (yield call(_getRoomList, date)) as IRoom[];

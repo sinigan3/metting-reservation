@@ -45,7 +45,7 @@ function RoomList({}: Props) {
     setDate(dateStr);
     dispatch(getRoomList(dateStr));
   };
-
+  console.log('------------loadingStatus', loadingStatus);
   return loadingStatus ? (
     <div>加载中，请稍后。。。</div>
   ) : (

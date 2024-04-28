@@ -56,7 +56,7 @@ function ScheduleEdit({}: Props) {
   useEffect(() => {
     dispatch(getRoomDetails(roomId));
     dispatch(getUserList());
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     if (scheduleDetails) {

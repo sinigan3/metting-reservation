@@ -75,7 +75,7 @@ const roomListMock = mock({
   ]
 }).list;
 
-const scheduleListMock = mock({
+const scheduleListMock = {
   id: '@ID',
   date: Random.now('yyyy-MM-dd'),
   // room: Random.pick(roomListMock).id,
@@ -88,7 +88,7 @@ const scheduleListMock = mock({
   // attendees: mock({
   //   'list|1-10': [Random.pick(userList).userid]
   // }).list
-});
+};
 
 // room
 let roomList: IRoom[] = [];
@@ -102,7 +102,7 @@ const _generateInitialData = () => {
     return;
   }
   roomList = roomListMock.map((item: IRoom) => {
-    let schedules: ISchedule[] = [scheduleListMock];
+    let schedules: ISchedule[] = [mock(scheduleListMock)];
     // @ts-ignore
     schedules = schedules.map((schedule) => {
       const res = {

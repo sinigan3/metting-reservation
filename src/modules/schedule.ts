@@ -49,6 +49,11 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
       yield call(this.getScheduleDetails.bind(this), id);
     }
   }
+  *onDestroy(): SagaGenerator {
+    this.setState({
+      data: {}
+    });
+  }
   /**
    * 获取会议室下的日程列表
    * @param roomId 会议室id
