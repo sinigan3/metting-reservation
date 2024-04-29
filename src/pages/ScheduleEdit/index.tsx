@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch, useLocation, push } from 'core-fe';
+import { useSelector, useDispatch, useLocation, push, useAction } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, DatePicker, Input, Select, Space, message } from 'antd';
 import scheduleModuleProxy from '../../modules/schedule';
@@ -53,9 +53,12 @@ function ScheduleEdit({}: Props) {
     );
   }, [roomDetails]);
 
+  const handleGetRoomDetails = useAction(getRoomDetails, roomId);
+  const handleGetUserList = useAction(getUserList);
+
   useEffect(() => {
-    dispatch(getRoomDetails(roomId));
-    dispatch(getUserList());
+    handleGetRoomDetails();
+    handleGetUserList();
   }, [roomId]);
 
   useEffect(() => {
@@ -75,12 +78,10 @@ function ScheduleEdit({}: Props) {
     }
   }, [scheduleDetails]);
 
-  const goScheduleDetails = () => {
-    dispatch(push(`/scheduleDetails/${id}`));
-  };
-  const goRoomDetails = () => {
-    dispatch(push(`/roomDetails/${roomId}`));
-  };
+  // @ts-ignore
+  const goScheduleDetails = useAction(push, `/scheduleDetails/${id}`);
+  // @ts-ignore
+  const goRoomDetails = useAction(push, `/roomDetails/${roomId}`);
 
   const handleChangeTimeSlots = (value: string[]) => {
     let newValue = [...value];

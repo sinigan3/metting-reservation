@@ -28,7 +28,7 @@ declare global {
 
 class ScheduleModule extends Module<RootState, 'schedule'> {
   constructor() {
-    super('schedule', { list: [], data: {} });
+    super('schedule', { list: [], data: null });
   }
 
   *onEnter(entryComponentProps: any): SagaGenerator {
@@ -51,7 +51,7 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
   }
   *onDestroy(): SagaGenerator {
     this.setState({
-      data: {}
+      data: null
     });
   }
   /**

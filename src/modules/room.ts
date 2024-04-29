@@ -15,7 +15,7 @@ declare global {
 
 class RoomModulle extends Module<RootState, 'room'> {
   constructor() {
-    super('room', { list: [], data: {} });
+    super('room', { list: [], data: null });
   }
 
   *onEnter(entryComponentProps: any): SagaGenerator {
@@ -33,7 +33,7 @@ class RoomModulle extends Module<RootState, 'room'> {
   // *onLocationMatched(routeParam: object, location: ModuleLocation<object>): SagaGenerator {
   // }
   *onDestroy(): SagaGenerator {
-    this.setState({ data: {} });
+    this.setState({ data: null });
   }
   /**
    * 获取某个日期会议室列表

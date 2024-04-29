@@ -6,8 +6,8 @@ declare global {
   interface RootState extends State {
     app: {
       user: { userInfo: IUser; userList: IUser[] };
-      room: { list: IRoom[]; data: IRoom | {} };
-      schedule: { list: ISchedule[]; data: ISchedule | {} };
+      room: { list: IRoom[]; data: IRoom | null };
+      schedule: { list: ISchedule[]; data: ISchedule | null };
     };
   }
 }

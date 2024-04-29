@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { push, useSelector, useDispatch, useParams } from 'core-fe';
+import { push, useSelector, useDispatch, useParams, useAction } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, Space } from 'antd';
 import scheduleModuleProxy from '../../modules/schedule';
@@ -51,17 +51,12 @@ function ScheduleDetails({}: Props) {
     dispatch(getUserNames(attendees, setAttendeesNames));
   }, [attendees]);
 
-  const goEdit = () => {
-    dispatch(push(`/scheduleEdit?roomId=${roomId}&id=${id}`));
-  };
+  // @ts-ignore
+  const goEdit = useAction(push, `/scheduleEdit?roomId=${roomId}&id=${id}`);
 
-  const handleDelSchedule = function () {
-    dispatch(
-      delSchedule(id, () => {
-        dispatch(push(`/roomDetails/${roomId}`));
-      })
-    );
-  };
+  const handleDelSchedule = useAction<any[]>(delSchedule, id, () => {
+    dispatch(push(`/roomDetails/${roomId}`));
+  });
 
   return (
     <div>
