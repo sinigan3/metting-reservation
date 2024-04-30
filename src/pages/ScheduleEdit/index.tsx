@@ -78,10 +78,8 @@ function ScheduleEdit({}: Props) {
     }
   }, [scheduleDetails]);
 
-  // @ts-ignore
-  const goScheduleDetails = useAction(push, `/scheduleDetails/${id}`);
-  // @ts-ignore
-  const goRoomDetails = useAction(push, `/roomDetails/${roomId}`);
+  const goScheduleDetails = () => dispatch(push(`/scheduleDetails/${id}`));
+  const goRoomDetails = () => dispatch(push(`/roomDetails/${roomId}`));
 
   const handleChangeTimeSlots = (value: string[]) => {
     let newValue = [...value];

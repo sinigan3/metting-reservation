@@ -28,7 +28,6 @@ function ScheduleDetails({}: Props) {
   }));
   const dispatch = useDispatch();
   const { delSchedule } = scheduleModuleProxy.getActions();
-  // @ts-ignore
   const { getUserNames } = userModuleProxy.getActions();
   const loadingStatus = useLoadingStatus('scheduleDetails');
   const id = (useParams() as { id: string }).id;
@@ -39,7 +38,6 @@ function ScheduleDetails({}: Props) {
   //   if (!id) {
   //     return;
   //   }
-  //   // @ts-ignore
   //   dispatch(getScheduleDetails(id)).then(({ attendees }: ISchedule = {}) => {
   //     if (attendees?.length) {
   //       getUserNames(attendees).then((names) => {
@@ -52,8 +50,7 @@ function ScheduleDetails({}: Props) {
     dispatch(getUserNames(attendees, setAttendeesNames));
   }, [attendees]);
 
-  // @ts-ignore
-  const goEdit = useAction(push, `/scheduleEdit?roomId=${roomId}&id=${id}`);
+  const goEdit = () => dispatch(push(`/scheduleEdit?roomId=${roomId}&id=${id}`));
 
   const handleDelSchedule = useAction<any[]>(delSchedule, id, () => {
     dispatch(push(`/roomDetails/${roomId}`));

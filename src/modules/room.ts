@@ -35,7 +35,6 @@ class RoomModulle extends Module<RootState, 'room'> {
   *onDestroy(): SagaGenerator {
     this.setState({ data: null });
   }
-  // @ts-ignore
   @Interval(5)
   *onTick(): SagaGenerator {
     console.log('-----------update');
@@ -45,7 +44,6 @@ class RoomModulle extends Module<RootState, 'room'> {
    * 获取某个日期会议室列表
    * @param date 如2024.4.25
    */
-  // @ts-ignore
   @Loading('roomList')
   *getRoomList(date?: string): SagaGenerator {
     yield delay(1000);
@@ -56,9 +54,8 @@ class RoomModulle extends Module<RootState, 'room'> {
    * 获取会议室详情
    * @param id 会议室id
    */
-  // @ts-ignore
   @Loading('roomDetails')
-  *getRoomDetails(id: string) {
+  *getRoomDetails(id: string): SagaGenerator {
     yield delay(1000);
     const data = (yield call(_getRoomDetails, id)) as IRoom;
     this.setState({ data });

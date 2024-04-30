@@ -103,7 +103,6 @@ const _generateInitialData = () => {
   }
   roomList = roomListMock.map((item: IRoom) => {
     let schedules: ISchedule[] = [mock(scheduleListMock)];
-    // @ts-ignore
     schedules = schedules.map((schedule) => {
       const res = {
         ...schedule,

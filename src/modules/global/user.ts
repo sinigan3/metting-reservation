@@ -1,5 +1,6 @@
 import { Module, register } from 'core-fe';
 import { call } from 'redux-saga/effects';
+import type { SagaGenerator } from 'core-fe';
 import {
   userInfo,
   getUserList as _getUserList,
@@ -25,7 +26,7 @@ class UserModulle extends Module<RootState, 'user'> {
   /**
    * 获取用户列表
    */
-  *getUserList() {
+  *getUserList(): SagaGenerator {
     const data = (yield call(_getUserList)) as IUser[];
     this.setState({
       userList: data
@@ -36,7 +37,7 @@ class UserModulle extends Module<RootState, 'user'> {
    * 获取当个用户的username
    * @param userid 用户id
    */
-  *getUserName(userid: string) {
+  *getUserName(userid: string): SagaGenerator {
     yield call(_getUserName, userid);
   }
 
@@ -45,8 +46,11 @@ class UserModulle extends Module<RootState, 'user'> {
    * @param userids 用户id数组 如['1111', '22222']
    * @returns 用户名称数组, 如['username1', 'username2']
    */
-  *getUserNames(userids: string[], cb?: (userNames: string[]) => void) {
-    if (!userids?.length) yield [];
+  *getUserNames(userids: string[], cb?: (userNames: string[]) => void): SagaGenerator {
+    if (!userids?.length) {
+      cb?.([]);
+      return;
+    }
     const data = (yield call(_getUserNames, userids)) as string[];
     cb?.(data);
   }

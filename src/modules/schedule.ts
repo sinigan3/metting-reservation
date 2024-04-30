@@ -10,6 +10,7 @@ import {
   reservedSchedule as _reservedSchedule
 } from '../mock';
 import qs from 'qs';
+import { ActionHandler } from 'core-fe/lib/module';
 
 declare global {
   interface ISchedule {
@@ -59,7 +60,7 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * @param roomId 会议室id
    */
 
-  *getScheduleList(roomId: string) {
+  *getScheduleList(roomId: string): SagaGenerator {
     const data = (yield call(_getScheduleList, roomId)) as ISchedule[];
     this.setState({
       list: data
@@ -70,9 +71,8 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 获取日程详情
    * @param id 日程id
    */
-  // @ts-ignore
   @Loading('scheduleDetails')
-  *getScheduleDetails(id: string) {
+  *getScheduleDetails(id: string): SagaGenerator {
     yield delay(1000);
     const data = (yield call(_getScheduleDetails, id)) as ISchedule;
     this.setState({
@@ -85,9 +85,8 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 创建日程
    * @param values ISchedule数据，除了id没有
    */
-  // @ts-ignore
   @Log()
-  *createSchedule(values: Pick<ISchedule, 'id'>, cb?: () => void) {
+  *createSchedule(values: Pick<ISchedule, 'id'>, cb?: () => void): SagaGenerator {
     yield call(_createSchedule, values as ISchedule);
     cb?.();
   }
@@ -96,9 +95,8 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 编辑日程
    * @param values ISchedule数据
    */
-  // @ts-ignore
   @Log()
-  *editSchedule(values: ISchedule, cb?: () => void) {
+  *editSchedule(values: ISchedule, cb?: () => void): SagaGenerator {
     yield call(_editSchedule, values);
     cb?.();
   }
@@ -107,13 +105,11 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 删除日程
    * @param id 日程id
    */
-  // @ts-ignore
   @Log()
-  *delSchedule(id: string, cb?: () => void) {
+  *delSchedule(id: string, cb?: () => void): SagaGenerator {
     yield call(_delSchedule, id);
     cb?.();
   }
-
   /**
    * 获取某个日期 时间段已预定的日程
    * @param date 当前日期
@@ -121,7 +117,12 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * @param id 日程id, 修改则不判断原日程时间段
    * @returns ISchedule
    */
-  *reservedSchedule(date: string, timeSlots: string, id?: string, cb?: (data: ISchedule) => void) {
+  *reservedSchedule(
+    date: string,
+    timeSlots: string,
+    id?: string,
+    cb?: (data: ISchedule) => void
+  ): SagaGenerator {
     const data = (yield call(_reservedSchedule, date, timeSlots, id)) as ISchedule;
     cb?.(data);
   }
