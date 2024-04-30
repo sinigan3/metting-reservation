@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo } from 'react';
 import type { MouseEventHandler } from 'react';
-import { push, useSelector, useDispatch, useParams, useLocation, useAction } from 'core-fe';
+import {
+  push,
+  useSelector,
+  useDispatch,
+  useParams,
+  useLocation,
+  useAction,
+  useLoadingStatus
+} from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Space } from 'antd';
 import roomModuleProxy from '../../modules/room';
@@ -23,6 +31,7 @@ function RoomDetails({}: Props) {
   const { date } = qs.parse(useLocation().search.slice(1)) as { date: string };
   const { getRoomDetails } = roomModuleProxy.getActions();
   const { delSchedule } = scheduleModuleProxy.getActions();
+  const loadingStatus = useLoadingStatus('roomDetails');
 
   // useEffect(() => {
   //   if (!id) {
@@ -67,7 +76,9 @@ function RoomDetails({}: Props) {
     return slotTimesArr;
   }, [schedules]);
 
-  return (
+  return loadingStatus ? (
+    <div>加载中，请稍后。。。</div>
+  ) : (
     <div>
       <h1>
         会议室名称：{name}， 当前日期：{date || TODAY_DATE}

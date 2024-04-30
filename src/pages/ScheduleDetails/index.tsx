@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { push, useSelector, useDispatch, useParams, useAction } from 'core-fe';
+import { push, useSelector, useDispatch, useParams, useAction, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, Space } from 'antd';
 import scheduleModuleProxy from '../../modules/schedule';
@@ -30,6 +30,7 @@ function ScheduleDetails({}: Props) {
   const { delSchedule } = scheduleModuleProxy.getActions();
   // @ts-ignore
   const { getUserNames } = userModuleProxy.getActions();
+  const loadingStatus = useLoadingStatus('scheduleDetails');
   const id = (useParams() as { id: string }).id;
 
   const [attendeesNames, setAttendeesNames] = useState<string[]>([]);
@@ -58,7 +59,9 @@ function ScheduleDetails({}: Props) {
     dispatch(push(`/roomDetails/${roomId}`));
   });
 
-  return (
+  return loadingStatus ? (
+    <div>加载中，请稍后。。。</div>
+  ) : (
     <div>
       <h1>日程详情页</h1>
       <Form>

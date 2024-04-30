@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch, useLocation, push, useAction } from 'core-fe';
+import { useSelector, useDispatch, useLocation, push, useAction, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, DatePicker, Input, Select, Space, message } from 'antd';
 import scheduleModuleProxy from '../../modules/schedule';
@@ -37,7 +37,7 @@ function ScheduleEdit({}: Props) {
   const { getRoomDetails } = roomModuleProxy.getActions();
   const { createSchedule, editSchedule, reservedSchedule } = scheduleModuleProxy.getActions();
   const { getUserList } = userModuleProxy.getActions();
-
+  const loadingStatus = useLoadingStatus('scheduleDetails');
   const { roomId, id } = qs.parse(useLocation().search.slice(1)) as { roomId: string; id: string };
 
   const [form] = Form.useForm();
@@ -166,7 +166,9 @@ function ScheduleEdit({}: Props) {
     //
   };
 
-  return id && scheduleDetails?.userid !== myUserid ? (
+  return loadingStatus ? (
+    <div>加载中，请稍后。。。</div>
+  ) : id && scheduleDetails?.userid !== myUserid ? (
     <div>
       对不起，您没有编辑权限
       <button onClick={goScheduleDetails}>返回查看日程详情</button>

@@ -1,5 +1,5 @@
-import { Module, register } from 'core-fe';
-import { call } from 'redux-saga/effects';
+import { Module, register, Loading, Log } from 'core-fe';
+import { call, delay } from 'redux-saga/effects';
 import type { ModuleLocation, SagaGenerator } from 'core-fe';
 import {
   getScheduleList as _getScheduleList,
@@ -58,6 +58,7 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 获取会议室下的日程列表
    * @param roomId 会议室id
    */
+
   *getScheduleList(roomId: string) {
     const data = (yield call(_getScheduleList, roomId)) as ISchedule[];
     this.setState({
@@ -69,7 +70,10 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 获取日程详情
    * @param id 日程id
    */
+  // @ts-ignore
+  @Loading('scheduleDetails')
   *getScheduleDetails(id: string) {
+    yield delay(1000);
     const data = (yield call(_getScheduleDetails, id)) as ISchedule;
     this.setState({
       data
@@ -81,6 +85,8 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 创建日程
    * @param values ISchedule数据，除了id没有
    */
+  // @ts-ignore
+  @Log()
   *createSchedule(values: Pick<ISchedule, 'id'>, cb?: () => void) {
     yield call(_createSchedule, values as ISchedule);
     cb?.();
@@ -90,6 +96,8 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 编辑日程
    * @param values ISchedule数据
    */
+  // @ts-ignore
+  @Log()
   *editSchedule(values: ISchedule, cb?: () => void) {
     yield call(_editSchedule, values);
     cb?.();
@@ -99,6 +107,8 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
    * 删除日程
    * @param id 日程id
    */
+  // @ts-ignore
+  @Log()
   *delSchedule(id: string, cb?: () => void) {
     yield call(_delSchedule, id);
     cb?.();
