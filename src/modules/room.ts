@@ -39,7 +39,7 @@ class RoomModulle extends Module<RootState, 'room'> {
   @Interval(5)
   *onTick(): SagaGenerator {
     console.log('-----------update');
-    yield call(this.getRoomList);
+    yield call(this.getRoomList.bind(this));
   }
   /**
    * 获取某个日期会议室列表
