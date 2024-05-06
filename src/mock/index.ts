@@ -6,7 +6,6 @@ import {
   TODAY_DATE,
   isConfictiTimeSlots
 } from '../utils';
-import { SagaGenerator } from 'core-fe';
 
 const ROOMLIST_KEY = 'mettingroom-reservation-data';
 const USERLIST_KEY = 'mettingroom-reservation-userlist-data';

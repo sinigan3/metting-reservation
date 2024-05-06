@@ -10,7 +10,6 @@ import {
   reservedSchedule as _reservedSchedule
 } from '../mock';
 import qs from 'qs';
-import { ActionHandler } from 'core-fe/lib/module';
 
 declare global {
   interface ISchedule {
@@ -42,7 +41,7 @@ class ScheduleModule extends Module<RootState, 'schedule'> {
       yield call(this.getScheduleDetails.bind(this), id);
     }
   }
-  *onLocationMatched(routeParam: object, location: ModuleLocation<object>): SagaGenerator {
+  *onLocationMatched(_: object, location: ModuleLocation<object>): SagaGenerator {
     const { pathname, search } = location;
     const { id } = qs.parse(search.slice(1));
     if (pathname === '/scheduleEdit' && id) {

@@ -1,5 +1,4 @@
-import React from 'react';
-import { useSelector, useLocation, NavLink } from 'core-fe';
+import { useSelector, NavLink } from 'core-fe';
 import type { State } from 'core-fe';
 import { Breadcrumb } from 'antd';
 

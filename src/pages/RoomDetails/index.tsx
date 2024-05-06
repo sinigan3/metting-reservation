@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { MouseEventHandler } from 'react';
 import {
   push,
@@ -89,7 +89,7 @@ function RoomDetails({}: Props) {
           {showTimeSlotsList.map((item) => {
             const schedule = schedules?.find((schedule) => schedule.timeSlots === item);
             if (schedule) {
-              const { id: scheduleId, timeSlots, userid, username, usageCode } = schedule;
+              const { id: scheduleId, userid, username, usageCode } = schedule;
               return (
                 <li key={item}>
                   <Space>

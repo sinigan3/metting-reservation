@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { push, useSelector, useDispatch, useParams, useAction, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, Space } from 'antd';

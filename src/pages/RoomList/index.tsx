@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { MouseEventHandler } from 'react';
 import { push, useSelector, useDispatch, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';

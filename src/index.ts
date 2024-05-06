@@ -25,6 +25,6 @@ bootstrap({
   rootContainer: document.getElementById('root') as HTMLElement,
   componentType: App,
   errorListener: {
-    *onError(error) {}
+    *onError() {}
   }
 });

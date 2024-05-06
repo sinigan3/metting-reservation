@@ -1,9 +1,8 @@
-import React from 'react';
-import { NavLink, useStore, useSelector, useDispatch } from 'core-fe';
+import { NavLink, useSelector } from 'core-fe';
 import { increase, decrease } from '../modules/home';
 type Props = any;
 
-export default function Home(props: Props) {
+export default function Home({}: Props) {
   // @ts-ignore
   const state = useSelector((state) => state.app.home);
   // const dispatch = useDispatch();

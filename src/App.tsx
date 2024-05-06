@@ -1,5 +1,4 @@
-import React from 'react';
-import { Switch, Route, Redirect } from 'core-fe';
+import { Switch, Route } from 'core-fe';
 // import Home from './modules/home';
 // import Test from './pages/Test';
 import { ConfigProvider, App as AntdApp } from 'antd';
