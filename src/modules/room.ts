@@ -2,7 +2,7 @@ import { Module, register, Loading, Interval } from 'core-fe';
 import type { SagaGenerator } from 'core-fe';
 import { call, delay } from 'redux-saga/effects';
 import { getRoomList as _getRoomList, getRoomDetails as _getRoomDetails } from '../mock';
-// import { decorator } from '../utils';
+// import { decorator } from '@utils';
 
 declare global {
   interface IRoom {

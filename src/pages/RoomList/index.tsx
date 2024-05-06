@@ -4,8 +4,8 @@ import { push, useSelector, useDispatch, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';
 import { Input, DatePicker, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import roomModuleProxy from '../../modules/room';
-import { TODAY_DATE } from '../../utils';
+import roomModuleProxy from '@modules/room';
+import { TODAY_DATE } from '@utils';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 

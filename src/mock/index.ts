@@ -5,7 +5,7 @@ import {
   getTimeSlotsInterval,
   TODAY_DATE,
   isConfictiTimeSlots
-} from '../utils';
+} from '@utils';
 
 const ROOMLIST_KEY = 'mettingroom-reservation-data';
 const USERLIST_KEY = 'mettingroom-reservation-userlist-data';

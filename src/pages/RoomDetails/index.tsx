@@ -11,9 +11,9 @@ import {
 } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Space } from 'antd';
-import roomModuleProxy from '../../modules/room';
-import scheduleModuleProxy from '../../modules/schedule';
-import { USAGE_CODE_ENUM, TODAY_DATE, ALL_TIME_SLOTS, getTimeSlotsArr } from '../../utils';
+import roomModuleProxy from '@modules/room';
+import scheduleModuleProxy from '@modules/schedule';
+import { USAGE_CODE_ENUM, TODAY_DATE, ALL_TIME_SLOTS, getTimeSlotsArr } from '@utils';
 import qs from 'qs';
 
 type Props = {};

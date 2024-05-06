@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { push, useSelector, useDispatch, useParams, useAction, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, Space } from 'antd';
-import scheduleModuleProxy from '../../modules/schedule';
-import { userModuleProxy } from '../../modules/global';
-import { USAGE_CODE_ENUM } from '../../utils';
+import scheduleModuleProxy from '@modules/schedule';
+import { userModuleProxy } from '@modules/global';
+import { USAGE_CODE_ENUM } from '@utils';
 
 type Props = {};
 

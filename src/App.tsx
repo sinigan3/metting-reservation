@@ -1,12 +1,12 @@
 import { Switch, Route } from 'core-fe';
-// import Home from './modules/home';
-// import Test from './pages/Test';
+// import Home from '@modules/home';
+// import Test from '@pages/Test';
 import { ConfigProvider, App as AntdApp } from 'antd';
-import Header from './pages/Header';
-import RoomList from './pages/RoomList';
-import RoomDetails from './pages/RoomDetails';
-import ScheduleDetails from './pages/ScheduleDetails';
-import ScheduleEdit from './pages/ScheduleEdit';
+import Header from '@pages/Header';
+import RoomList from '@pages/RoomList';
+import RoomDetails from '@pages/RoomDetails';
+import ScheduleDetails from '@pages/ScheduleDetails';
+import ScheduleEdit from '@pages/ScheduleEdit';
 // import './App.css';
 
 function App() {

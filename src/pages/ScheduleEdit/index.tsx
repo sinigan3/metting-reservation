@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch, useLocation, push, useAction, useLoadingStatus } from 'core-fe';
 import type { State } from 'core-fe';
 import { Button, Form, DatePicker, Input, Select, Space, message } from 'antd';
-import scheduleModuleProxy from '../../modules/schedule';
-import { userModuleProxy } from '../../modules/global';
-import roomModuleProxy from '../../modules/room';
+import scheduleModuleProxy from '@modules/schedule';
+import { userModuleProxy } from '@modules/global';
+import roomModuleProxy from '@modules/room';
 import {
   USAGE_CODES,
   USAGE_CODE_ENUM,
@@ -12,7 +12,7 @@ import {
   getTimeSlots,
   getTimeSlotsArr,
   DATE_FORMAT
-} from '../../utils';
+} from '@utils';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import qs from 'qs';
