@@ -2,6 +2,7 @@
   "name": "mettingroom-reservation",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "antd": "^5.16.4",
     "core-fe": "^1.37.2",
