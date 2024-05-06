@@ -35,7 +35,7 @@ class RoomModulle extends Module<RootState, 'room'> {
   *onDestroy(): SagaGenerator {
     this.setState({ data: null });
   }
-  @Interval(5)
+  @Interval(10)
   *onTick(): SagaGenerator {
     console.log('-----------update');
     yield call(this.getRoomList.bind(this));

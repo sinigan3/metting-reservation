@@ -1,12 +1,13 @@
-import { Switch, Route } from 'core-fe';
+import { Suspense, lazy } from 'react';
+import { Switch, Route, Redirect } from 'core-fe';
 // import Home from '@modules/home';
 // import Test from '@pages/Test';
 import { ConfigProvider, App as AntdApp } from 'antd';
 import Header from '@pages/Header';
 import RoomList from '@pages/RoomList';
-import RoomDetails from '@pages/RoomDetails';
-import ScheduleDetails from '@pages/ScheduleDetails';
-import ScheduleEdit from '@pages/ScheduleEdit';
+const RoomDetails = lazy(() => import('@pages/RoomDetails'));
+const ScheduleDetails = lazy(() => import('@pages/ScheduleDetails'));
+const ScheduleEdit = lazy(() => import('@pages/ScheduleEdit'));
 // import './App.css';
 
 function App() {
@@ -14,15 +15,15 @@ function App() {
     <ConfigProvider>
       <AntdApp>
         <Header />
-        <Switch>
-          {/* <Route path="/" component={Home} /> */}
-          {/* <Route path="/test" component={Test} /> */}
-          {/* <Redirect path="/" to="/roomList"></Redirect> */}
-          <Route path="/" component={RoomList} />
-          <Route path="/roomDetails/:id" component={RoomDetails} />
-          <Route path="/scheduleDetails/:id" component={ScheduleDetails} />
-          <Route path="/scheduleEdit" component={ScheduleEdit} />
-        </Switch>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            <Route exact path="/" component={RoomList} />
+            <Route path="/roomDetails/:id" component={RoomDetails} />
+            <Route path="/scheduleDetails/:id" component={ScheduleDetails} />
+            <Route path="/scheduleEdit" component={ScheduleEdit} />
+            <Redirect to="/" />
+          </Switch>
+        </Suspense>
       </AntdApp>
     </ConfigProvider>
   );
